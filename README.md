@@ -2,6 +2,12 @@
 
 A fun and interactive Ping Pong game built with Python, OpenCV, and CvZone! Control the paddles using real-time hand tracking, challenge a friend, and see who reaches 5 points first. 🚀
 
+## Project Team
+- Ahmed Mosaad
+- Ahmed Shaheen
+- Mohammed Helal
+- Islam Mohammed 
+
 ## Features
 - Real-time hand tracking for paddle control.
 - Dynamic ball physics for an exciting experience.
