@@ -9,13 +9,12 @@ import time
 pygame.mixer.init()
 hit_sound = pygame.mixer.Sound("Resources/HIT SOUND.wav")
 score_sound = pygame.mixer.Sound("Resources/SCORE SOUND.wav")
-restart_sound = pygame.mixer.Sound('Resources/AGGAAINN..mp3')
+restart_sound = pygame.mixer.Sound('Resources/AGAIN.mp3')
 begin_sound = pygame.mixer.Sound('Resources/3,2,1 GO GO GO.wav')
-background_sound = pygame.mixer.music.load("Resources/background_music.mp3")
+pygame.mixer.music.load("Resources/background_music.mp3")
 click_sound = pygame.mixer.Sound('Resources/clicking sound.wav')
 click_sound.set_volume(1)
 pygame.mixer.music.play(-1)
-
 cap = cv2.VideoCapture(0)
 cap.set(3, 1280)
 cap.set(4, 720)
@@ -34,8 +33,8 @@ detector = HandDetector(detectionCon=0.8, maxHands=2)
 
 # Variables
 ballPos = [300, 300]
-speedX = 45
-speedY = 45
+speedX = 25
+speedY = 25
 gameOver = False
 score = [0, 0]
 rotation_angle = 0
@@ -51,17 +50,17 @@ back_button = (1032, 591, 1240, 673)  # Back button on rules screen
 game_over_back_button = (986, 585, 1240, 678)  # Back to menu button on Game Over screen
 
 # Function to check if a click is inside a button box
-def is_inside_box(x, y, box):
-    x1, y1, x2, y2 = box
-    return x1 <= x <= x2 and y1 <= y <= y2
+def is_inside_box(py1, py2, box):
+    x1_box, y1_box, x2_box, y2_box = box  # Renamed variables to avoid shadowing
+    return x1_box <= py1 <= x2_box and y1_box <= py2 <= y2_box
 
 # Function to rotate an image with an alpha channel
 def rotate_image(image, angle):
-    h, w, _ = image.shape
-    center = (w // 2, h // 2)
+    high, width, _ = image.shape
+    center = (width // 2, high // 2)
     rotation_matrix = cv2.getRotationMatrix2D(center, angle, 1.0)
-    rotated_image = cv2.warpAffine(image[:, :, :3], rotation_matrix, (w, h), flags=cv2.INTER_LINEAR)
-    alpha_channel = cv2.warpAffine(image[:, :, 3], rotation_matrix, (w, h), flags=cv2.INTER_LINEAR)
+    rotated_image = cv2.warpAffine(image[:, :, :3], rotation_matrix, (width, high), flags=cv2.INTER_LINEAR)
+    alpha_channel = cv2.warpAffine(image[:, :, 3], rotation_matrix, (width, high), flags=cv2.INTER_LINEAR)
     rotated_image = cv2.merge((rotated_image, alpha_channel))
     return rotated_image
 
@@ -88,23 +87,20 @@ while True:
         cv2.imshow("Image", img)
 
         # Mouse click detection
-        def mouse_click(event, x, y, flags, param):
+        def mouse_click(event, mx, my, _, __):
             global state,gameOver,score,ballPos,speedX,speedY,rotation_angle,countdown_finished
             if event == cv2.EVENT_LBUTTONDOWN:
-                if is_inside_box(x, y, play_button):
+                if is_inside_box(mx, my, play_button):
                     pygame.mixer.Sound.play(click_sound)
                     gameOver = False
                     score = [0, 0]
-                    ballPos = [300, 300]
-                    speedX, speedY = 45, 45
-                    rotation_angle = 0
                     countdown_finished = False
                     state = "play"
                     start_countdown()
-                elif is_inside_box(x, y, rules_button):
+                elif is_inside_box(mx, my, rules_button):
                     pygame.mixer.Sound.play(click_sound)
                     state = "rules"
-                elif is_inside_box(x, y, exit_button):
+                elif is_inside_box(mx, my, exit_button):
                     pygame.mixer.quit()
                     cap.release()
                     cv2.destroyAllWindows()
@@ -121,10 +117,10 @@ while True:
         cv2.imshow("Image", img)
 
         # Mouse click detection
-        def mouse_click(event, x, y, flags, param):
+        def mouse_click(event, mx, my, _, __):
             global state
             if event == cv2.EVENT_LBUTTONDOWN:
-                if is_inside_box(x, y, back_button):
+                if is_inside_box(mx, my, back_button):
                     pygame.mixer.Sound.play(click_sound)
                     state = "menu"
 
@@ -194,11 +190,11 @@ while True:
             img = imgGameOver.copy()
             cv2.putText(img, f'{score[0]}-{score[1]}', (554, 360), cv2.FONT_HERSHEY_COMPLEX, 2.5, (0, 0, 255), 5)
             
-             # Add "Back to Main Menu" button logic
-            def mouse_click(event, x, y, flags, param):
+            # Add "Back to Main Menu" button logic
+            def mouse_click(event, mx, my, _, __):
                 global state
                 if event == cv2.EVENT_LBUTTONDOWN:
-                    if is_inside_box(x, y, game_over_back_button):
+                    if is_inside_box(mx, my , game_over_back_button):
                         pygame.mixer.Sound.play(click_sound)
                         state = "menu"
 
@@ -221,11 +217,8 @@ while True:
         if key == ord('r'):  # Reset game
             pygame.mixer.Sound.play(restart_sound)
             ballPos = [400, 400]
-            speedX = 40
-            speedY = 40
             gameOver = False
             score = [0, 0]
-            rotation_angle = 0
             imgGameOver = cv2.imread("Resources/GameOver.png")
         elif key == ord('q'):  # Quit
             break
