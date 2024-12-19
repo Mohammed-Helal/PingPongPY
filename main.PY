@@ -65,7 +65,7 @@ def rotate_image(image, angle):
     return rotated_image
 
 # Countdown variables
-countdown_start_time = None
+countdown_start_time = time.time()
 countdown_finished = False
 
 # Function to start the countdown
@@ -220,7 +220,7 @@ while True:
             pygame.mixer.Sound.play(restart_sound)
             countdown_finished = False
             start_countdown()
-            speedX = -speedX
+            speedX = speedX
             ballPos = [800, 250]
             gameOver = False
             score = [0, 0]
