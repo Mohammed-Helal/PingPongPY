@@ -220,10 +220,12 @@ while True:
             pygame.mixer.Sound.play(restart_sound)
             countdown_finished = False
             start_countdown()
-            speedX = speedX
-            ballPos = [800, 250]
             gameOver = False
             score = [0, 0]
+            if speedX > 0:
+                ballPos = [400 , 250]
+            else:
+                ballPos = [800 , 250]
             imgGameOver = cv2.imread("Resources/GameOver.png")
         elif key == ord('q'):  # Quit
             break
