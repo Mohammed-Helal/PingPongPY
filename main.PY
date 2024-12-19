@@ -140,7 +140,7 @@ while True:
             time_elapsed = time.time() - countdown_start_time
             countdown_value = 3 - int(time_elapsed)
             if countdown_value > 0:
-                cv2.putText(img, str(countdown_value), (600, 400), cv2.FONT_HERSHEY_COMPLEX, 5, (0, 0, 255), 10)
+                cv2.putText(img, str(countdown_value), (590, 330), cv2.FONT_HERSHEY_COMPLEX, 5, (92, 94, 255), 10)
             else:
                 countdown_finished = True
             cv2.imshow("Image", img)
@@ -175,11 +175,13 @@ while True:
         # Scoring and Game Over logic
         if ballPos[0] < 40:
             score[1] += 1
-            ballPos = [640, 360]
+            ballPos = [400, 250]
             pygame.mixer.Sound.play(score_sound)
+            speedX = -speedX
         if ballPos[0] > 1200:
             score[0] += 1
-            ballPos = [640, 360]
+            ballPos = [800, 250]
+            speedX = -speedX
             pygame.mixer.Sound.play(score_sound)
 
         if score[0] >= 5 or score[1] >= 5:
@@ -188,7 +190,7 @@ while True:
         if gameOver:
             imgGameOver = cv2.imread("Resources/gameOver.png")
             img = imgGameOver.copy()
-            cv2.putText(img, f'{score[0]}-{score[1]}', (554, 360), cv2.FONT_HERSHEY_COMPLEX, 2.5, (0, 0, 255), 5)
+            cv2.putText(img, f'{score[0]}-{score[1]}', (556, 360), cv2.FONT_HERSHEY_COMPLEX, 2.5, (0, 0, 255), 5)
             
             # Add "Back to Main Menu" button logic
             def mouse_click(event, mx, my, _, __):
@@ -207,8 +209,8 @@ while True:
             ballPos[1] += speedY
             rotated_ball = rotate_image(imgBall, rotation_angle)
             img = cvzone.overlayPNG(img, rotated_ball, ballPos)
-            cv2.putText(img, str(score[0]), (302, 673), cv2.FONT_HERSHEY_COMPLEX, 3, (255, 255, 255), 5)
-            cv2.putText(img, str(score[1]), (902, 673), cv2.FONT_HERSHEY_COMPLEX, 3, (255, 255, 255), 5)
+            cv2.putText(img, str(score[0]), (302, 665), cv2.FONT_HERSHEY_COMPLEX, 3, (255, 255, 255), 5)
+            cv2.putText(img, str(score[1]), (902, 665), cv2.FONT_HERSHEY_COMPLEX, 3, (255, 255, 255), 5)
 
         img[580:700, 20:233] = cv2.resize(imgRaw, (213, 120))
         cv2.imshow("Image", img)
@@ -216,7 +218,10 @@ while True:
         key = cv2.waitKey(1)
         if key == ord('r'):  # Reset game
             pygame.mixer.Sound.play(restart_sound)
-            ballPos = [400, 400]
+            countdown_finished = False
+            start_countdown()
+            speedX = -speedX
+            ballPos = [800, 250]
             gameOver = False
             score = [0, 0]
             imgGameOver = cv2.imread("Resources/GameOver.png")
